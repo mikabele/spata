@@ -1,0 +1,9 @@
+.*
+!.gitignore
+!.scalafmt.conf
+!.scalafix.conf
+!.travis.yml
+!.codacy.yml
+target/
+project/target/
+project/metals.sbt
