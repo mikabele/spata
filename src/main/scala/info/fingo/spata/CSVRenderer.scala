@@ -143,7 +143,7 @@ final class CSVRenderer[F[_]: RaiseThrowable](config: CSVConfig) {
     config.escapeMode match {
       case CSVConfig.EscapeRequired => if (sdq.length != sl || hasDelimiters(s)) sdq.mkString(sq, "", sq) else s
       case CSVConfig.EscapeSpaces =>
-        if (sdq.length != sl || hasDelimiters(s) || s.strip().length != sl) sdq.mkString(sq, "", sq) else s
+        if (sdq.length != sl || hasDelimiters(s) || s.trim().length != sl) sdq.mkString(sq, "", sq) else s
       case CSVConfig.EscapeAll =>
         sdq.mkString(sq, "", sq)
     }

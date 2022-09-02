@@ -11,6 +11,7 @@ package info.fingo.spata.io
 
 import cats.effect.{Async, Sync}
 import cats.syntax.all._
+import fs2.io.file.Flags
 import fs2.{io, Chunk, Pipe, Pull, Stream}
 import info.fingo.spata.util.Logger
 
@@ -208,7 +209,6 @@ object Reader {
   def shifting[F[_]: Async: Logger](chunkSize: Int = defaultChunkSize): Shifting[F] =
     new Shifting[F](chunkSize)
 
-
   /** Provides reader with support of context shifting for I/O operations.
     * Uses internal, default blocker backed by a new cached thread pool and default chunks size.
     *
@@ -307,8 +307,9 @@ object Reader {
     def read(path: Path)(implicit codec: Codec): Stream[F, Char] =
       for {
         _ <- Logger[F].debugS(s"Reading data from path $path with context shift")
-        char <- io.file
-          .readAll[F](path, chunkSize)
+        char <- fs2.io.file
+          .Files[F]
+          .readAll(fs2.io.file.Path.fromNioPath(path), chunkSize, Flags.Read)
           .through(byte2char)
       } yield char
 

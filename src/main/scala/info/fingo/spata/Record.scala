@@ -106,7 +106,7 @@ final class Record private (val values: IndexedSeq[String], val position: Option
     * val record: Record = ???
     * case class Person(name: String, born: LocalDate, died: Option[LocalDate])
     * implicit val ldsp: StringParser[LocalDate] = (str: String) =>
-    *     LocalDate.parse(str.strip, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+    *     LocalDate.parse(str.trim, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     * val person: Decoded[Person] = record.to[Person]()
     * }}}
     *
@@ -573,7 +573,7 @@ object Record {
       * }}}
       *
       * @param key the key (field name) of removed value
-      * @return builder stripped of selected value
+      * @return builder trimped of selected value
       */
     def remove(key: String): Builder = new Builder(buf, removed + key)
 

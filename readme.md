@@ -145,7 +145,7 @@ As defined in RFC 4180, quotation marks in the content have to be escaped throug
 
 By default, in accordance with the standard, whitespace characters are considered part of the field and are not ignored.
 Nonetheless, it is possible to turn on trimming of leading and trailing whitespaces with a configuration option.
-This differs from stripping whitespaces from resulting field content
+This differs from trimping whitespaces from resulting field content
 because it distinguishes between quoted and unquoted spaces. For example, having the following input:
 ```csv
 X,Y,Z
@@ -662,8 +662,8 @@ Defining a parser with support for custom formatting requires the implementation
 ```scala
 implicit val sdf: FormattedStringParser[Date, DateFormat] =
   new FormattedStringParser[Date, DateFormat] {
-      override def apply(str: String): Date = Date.valueOf(str.strip)
-      override def apply(str: String, fmt: DateFormat): Date =  new Date(fmt.parse(str.strip).getTime)
+      override def apply(str: String): Date = Date.valueOf(str.trim)
+      override def apply(str: String, fmt: DateFormat): Date =  new Date(fmt.parse(str.trim).getTime)
   }
 ```
 and can be used as follows:

@@ -16,7 +16,7 @@ import shapeless.labelled.{field, FieldType}
   *
   * @tparam L type of target `HList`
   */
-trait RecordToHList[L <: HList] {
+trait RecordToHList[L] {
 
   /** Converts record to [[shapeless.HList]].
     *

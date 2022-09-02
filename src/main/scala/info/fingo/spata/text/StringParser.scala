@@ -138,7 +138,7 @@ object StringParser {
     * @return parser which accepts empty input
     */
   implicit def optionParser[A](implicit parser: StringParser[A]): StringParser[Option[A]] =
-    (str: String) => if (str == null || str.isBlank) None else Some(parser(str))
+    (str: String) => if (str == null || str.trim.isEmpty) None else Some(parser(str))
 
   /** Parser for optional values with support for different formats.
     * Allows conversion of any simple parser to return `Option[A]` instead of `A`, avoiding error for empty string.
@@ -152,35 +152,35 @@ object StringParser {
     implicit parser: FormattedStringParser[A, B]
   ): FormattedStringParser[Option[A], B] =
     new FormattedStringParser[Option[A], B] {
-      override def apply(str: String): Option[A] = if (str == null || str.isBlank) None else Some(parser(str))
+      override def apply(str: String): Option[A] = if (str == null || str.trim.isEmpty) None else Some(parser(str))
       override def apply(str: String, fmt: B): Option[A] =
-        if (str == null || str.isBlank) None else Some(parser(str, fmt))
+        if (str == null || str.trim.isEmpty) None else Some(parser(str, fmt))
     }
 
   /** No-op parser for strings. */
   implicit val stringParser: StringParser[String] = (str: String) => str
 
   /** Parser for integer values. */
-  implicit val intParser: StringParser[Int] = (str: String) => str.strip.toInt
+  implicit val intParser: StringParser[Int] = (str: String) => str.trim.toInt
 
   /** Parser for long values with support for formats. */
   implicit val longParserFmt: FormattedStringParser[Long, NumberFormat] =
     new FormattedStringParser[Long, NumberFormat] {
-      override def apply(str: String): Long = str.strip.toLong
+      override def apply(str: String): Long = str.trim.toLong
       override def apply(str: String, fmt: NumberFormat): Long = parseNumber(str, fmt).longValue()
     }
 
   /** Parser for double values with support for formats. */
   implicit val doubleParserFmt: FormattedStringParser[Double, DecimalFormat] =
     new FormattedStringParser[Double, DecimalFormat] {
-      override def apply(str: String): Double = str.strip.toDouble
+      override def apply(str: String): Double = str.trim.toDouble
       override def apply(str: String, fmt: DecimalFormat): Double = parseNumber(str, fmt).doubleValue()
     }
 
   /** Parser for decimal values with support for formats. */
   implicit val bigDecimalParserFmt: FormattedStringParser[BigDecimal, DecimalFormat] =
     new FormattedStringParser[BigDecimal, DecimalFormat] {
-      override def apply(str: String): BigDecimal = BigDecimal(str.strip)
+      override def apply(str: String): BigDecimal = BigDecimal(str.trim)
       override def apply(str: String, fmt: DecimalFormat): BigDecimal = {
         fmt.setParseBigDecimal(true)
         BigDecimal(parseNumber(str, fmt).asInstanceOf[java.math.BigDecimal])
@@ -190,22 +190,22 @@ object StringParser {
   /** Parser for date values with support for formats. */
   implicit val localDateParserFmt: FormattedStringParser[LocalDate, DateTimeFormatter] =
     new FormattedStringParser[LocalDate, DateTimeFormatter] {
-      override def apply(str: String): LocalDate = LocalDate.parse(str.strip)
-      override def apply(str: String, fmt: DateTimeFormatter): LocalDate = LocalDate.parse(str.strip, fmt)
+      override def apply(str: String): LocalDate = LocalDate.parse(str.trim)
+      override def apply(str: String, fmt: DateTimeFormatter): LocalDate = LocalDate.parse(str.trim, fmt)
     }
 
   /** Parser for time values with support for formats. */
   implicit val localTimeParserFmt: FormattedStringParser[LocalTime, DateTimeFormatter] =
     new FormattedStringParser[LocalTime, DateTimeFormatter] {
-      override def apply(str: String): LocalTime = LocalTime.parse(str.strip)
-      override def apply(str: String, fmt: DateTimeFormatter): LocalTime = LocalTime.parse(str.strip, fmt)
+      override def apply(str: String): LocalTime = LocalTime.parse(str.trim)
+      override def apply(str: String, fmt: DateTimeFormatter): LocalTime = LocalTime.parse(str.trim, fmt)
     }
 
   /** Parser for date with time values with support for formats. */
   implicit val localDateTimeParserFmt: FormattedStringParser[LocalDateTime, DateTimeFormatter] =
     new FormattedStringParser[LocalDateTime, DateTimeFormatter] {
-      override def apply(str: String): LocalDateTime = LocalDateTime.parse(str.strip)
-      override def apply(str: String, fmt: DateTimeFormatter): LocalDateTime = LocalDateTime.parse(str.strip, fmt)
+      override def apply(str: String): LocalDateTime = LocalDateTime.parse(str.trim)
+      override def apply(str: String, fmt: DateTimeFormatter): LocalDateTime = LocalDateTime.parse(str.trim, fmt)
     }
 
   /** Parser for boolean values with support for formats. */
@@ -218,7 +218,7 @@ object StringParser {
   /* Parses whole string to number (since NumberFormat accepts partial input). */
   private def parseNumber(str: String, fmt: NumberFormat): Number = {
     val pos = new ParsePosition(0)
-    val s = str.strip
+    val s = str.trim
     val num = fmt.parse(s, pos)
     if (pos.getIndex != s.length)
       throw new ParseError(

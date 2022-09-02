@@ -121,7 +121,7 @@ object StringsValidator {
     * @return validator
     */
   def apply(allowed: String*): Validator[String] = new Validator[String] {
-    override def isValid(value: String): Boolean = allowed.exists(_.equalsIgnoreCase(value.strip))
+    override def isValid(value: String): Boolean = allowed.exists(_.equalsIgnoreCase(value.trim))
     override def errorMessage(value: String): String = s"String [$value] does not match any of allowed"
   }
 }
@@ -137,7 +137,7 @@ object MinLenValidator {
     * @return validator
     */
   def apply(min: Int): Validator[String] = new Validator[String] {
-    override def isValid(value: String): Boolean = value.strip.length >= min
+    override def isValid(value: String): Boolean = value.trim.length >= min
     override def errorMessage(value: String): String = s"String [$value] is too short"
   }
 }
@@ -153,7 +153,7 @@ object MaxLenValidator {
     * @return validator
     */
   def apply(max: Int): Validator[String] = new Validator[String] {
-    override def isValid(value: String): Boolean = value.strip.length <= max
+    override def isValid(value: String): Boolean = value.trim.length <= max
     override def errorMessage(value: String): String = s"String [$value] is too long"
   }
 }
@@ -171,7 +171,7 @@ object LengthValidator {
     */
   def apply(min: Int, max: Int): Validator[String] = new Validator[String] {
     override def isValid(value: String): Boolean = {
-      val len = value.strip.length
+      val len = value.trim.length
       len >= min && len <= max
     }
     override def errorMessage(value: String): String = s"String [$value] length is out of range"
@@ -183,7 +183,7 @@ object LengthValidator {
     * @return validator
     */
   def apply(length: Int): Validator[String] = new Validator[String] {
-    override def isValid(value: String): Boolean = value.strip.length == length
+    override def isValid(value: String): Boolean = value.trim.length == length
     override def errorMessage(value: String): String = s"String [$value] length is incorrect"
   }
 }

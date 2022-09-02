@@ -61,7 +61,7 @@ import info.fingo.spata.util.Logger
   * @param quoteMark character used to wrap (quote) field content, `'"'` by default
   * @param hasHeader set if data starts with header row, `true` by default
   * @param headerMap definition of header remapping, by name or index, empty by default
-  * @param trimSpaces flag to strip spaces, `false` by default, valid only for parsing
+  * @param trimSpaces flag to trim spaces, `false` by default, valid only for parsing
   * @param fieldSizeLimit maximal size of a field, `None` by default, valid only for parsing
   * @param escapeMode method of escaping fields, `EscapeRequired` by default, valid only for rendering
   */
@@ -91,7 +91,7 @@ final case class CSVConfig private[spata] (
   /** Remap selected fields names. */
   def mapHeader(hm: HeaderMap): CSVConfig = this.copy(headerMap = hm)
 
-  /** Gets new config from this one by switching on stripping of unquoted, leading and trailing whitespaces.
+  /** Gets new config from this one by switching on trimping of unquoted, leading and trailing whitespaces.
     *
     * @note This setting is used only by parser and ignored by renderer.
     */

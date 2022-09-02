@@ -20,20 +20,21 @@ val fs2Version = "3.2.8"
 val shapelessVersion = "2.3.9"
 
 lazy val root = (project in file("."))
-  .enablePlugins(AutomateHeaderPlugin)
+  //.enablePlugins(AutomateHeaderPlugin)
   .settings(basicSettings: _*)
-  .settings(publishSettings: _*)
+  //.settings(publishSettings: _*)
   .configs(PerformanceTest)
   .settings(
-    licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
-    headerLicenseStyle := HeaderLicenseStyle.SpdxSyntax,
-    headerEmptyLine := false,
+//    licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+//    headerLicenseStyle := HeaderLicenseStyle.SpdxSyntax,
+//    headerEmptyLine := false,
     libraryDependencies ++= Seq(
       "org.typelevel" %% "cats-effect" % carsEffectVersion,
       "co.fs2" %% "fs2-core" % fs2Version,
       "co.fs2" %% "fs2-io" % fs2Version,
       "com.chuusai" %% "shapeless" % shapelessVersion,
       "org.slf4j" % "slf4j-api" % "1.7.36",
+      "org.typelevel" %% "mouse" % "1.1.0",
       "org.scalatest" %% "scalatest" % "3.2.12" % Test,
       "com.storm-enroute" %% "scalameter" % "0.21" % Test,
       "org.slf4j" % "slf4j-simple" % "1.7.36" % Test
@@ -54,15 +55,14 @@ lazy val root = (project in file("."))
     autoAPIMappings := true
   )
 
-import xerial.sbt.Sonatype.GitHubHosting
-lazy val publishSettings = Seq(
-  sonatypeProjectHosting := Some(GitHubHosting("fingo", "spata", "robert.marek@fingo.info")),
-  publishMavenStyle := true,
-  publishTo := sonatypePublishToBundle.value,
-  pgpPublicRing := file("ci/public-key.asc"),
-  pgpSecretRing := file("ci/secret-key.asc"),
-  developers := List(Developer("susuro", "Robert Marek", "robert.marek@fingo.info", url("https://github.com/susuro")))
-)
+//lazy val publishSettings = Seq(
+//  sonatypeProjectHosting := Some(GitHubHosting("fingo", "spata", "robert.marek@fingo.info")),
+//  publishMavenStyle := true,
+//  publishTo := sonatypePublishToBundle.value,
+//  pgpPublicRing := file("ci/public-key.asc"),
+//  pgpSecretRing := file("ci/secret-key.asc"),
+//  developers := List(Developer("susuro", "Robert Marek", "robert.marek@fingo.info", url("https://github.com/susuro")))
+//)
 
 lazy val scalacSettings = Seq( // based on https://nathankleyn.com/2019/05/13/recommended-scalac-flags-for-2-13/
   "-target:11",

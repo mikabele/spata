@@ -7,7 +7,7 @@ package info.fingo.spata.io
 
 import cats.effect.{Async, Sync}
 import cats.syntax.all._
-import fs2.{Chunk, Pipe, Stream, io, text}
+import fs2.{io, text, Chunk, Pipe, Stream}
 import info.fingo.spata.util.Logger
 
 import java.io.OutputStream
@@ -165,14 +165,14 @@ object Writer {
     * @tparam F the effect type, with type classes providing support for delayed execution (typically [[cats.effect.IO]]),
     * execution environment for non-blocking operation (to shift back to) and logging (provided internally by spata)
     */
-  final class Shifting[F[_]: Async: Logger] private[spata] ()extends Writer[F] {
+  final class Shifting[F[_]: Async: Logger] private[spata] () extends Writer[F] {
 
     /** @inheritdoc */
     def write(fos: F[OutputStream])(implicit codec: Codec): Pipe[F, Char, Unit] =
       (in: Stream[F, Char]) =>
         for {
           _ <- Logger[F].debugS("Writing data to OutputStream with context shift")
-          _ <- in.through[F,Byte](char2byte).through(io.writeOutputStream(fos, autoClose):Pipe[F, Byte, Unit])
+          _ <- in.through[F, Byte](char2byte).through(io.writeOutputStream(fos, autoClose): Pipe[F, Byte, Unit])
         } yield ()
 
     /** @inheritdoc */
@@ -192,9 +192,12 @@ object Writer {
       (in: Stream[F, Char]) =>
         for {
           _ <- Logger[F].debugS(s"Writing data to path $path with context shift")
-          _ <- in.through[F,Byte](char2byte).through(io.file.writeAll[F](path,  openOptions):Pipe[F, Byte, Unit])
+          _ <- in
+            .through[F, Byte](char2byte)
+            .through(
+              fs2.io.file.Files[F].writeAll(fs2.io.file.Path.fromNioPath(path)): Pipe[F, Byte, Unit]
+            )
         } yield ()
-
 
     protected def char2byte(implicit codec: Codec): Pipe[F, Char, Byte] =
       (in: Stream[F, Char]) => in.chunks.map(_.mkString_("")).through(fs2.text.encode(codec.charSet))
